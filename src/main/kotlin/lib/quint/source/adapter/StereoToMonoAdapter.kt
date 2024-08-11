@@ -8,10 +8,13 @@ class StereoToMonoAdapter(
     var balance: Double = 0.0,
 ) : MonoAudioSource {
     override fun sample(time: Double): Double {
-        val rightWeight = (balance + 1.0) / 2.0
-        val leftWeight = 1.0 - rightWeight
-        val left = stereoSource.sampleLeft(time) * leftWeight
-        val right = stereoSource.sampleRight(time) * rightWeight
-        return left + right
+        val leftVolume = if (balance <= 0.0) 1.0 else clamp(1.0 - balance)
+        val rightVolume = if (balance >= 0.0) 1.0 else clamp(1.0 + balance)
+        val leftSample = stereoSource.sampleLeft(time) * leftVolume
+        val rightSample = stereoSource.sampleRight(time) * rightVolume
+        return (leftSample + rightSample) / 2.0
     }
+
+    private fun clamp(value: Double): Double =
+        if (value > 1.0) 1.0 else if (value < 0.0) 0.0 else value
 }
