@@ -80,7 +80,7 @@ class AudioPlayer {
 
         while (isRunning && elapsedSeconds < timeoutSeconds) {
             buffer.clear()
-            AudioWriter.generate(source, buffer, line.format, framesPerBatch, elapsedSeconds)
+            AudioWriter.generateFrames(source, buffer, line.format, framesPerBatch, elapsedSeconds)
             val bytes = buffer.array()
             line.write(bytes, 0, bytes.size)
             elapsedFrames += framesPerBatch

@@ -8,17 +8,17 @@ import java.nio.ByteBuffer
 import javax.sound.sampled.AudioFormat
 
 object AudioWriter {
-    fun generate(
+    fun generateSeconds(
         source: AudioSource,
         buffer: ByteBuffer,
         format: AudioFormat,
         seconds: Double,
         timeShift: Double = 0.0,
     ) {
-        generate(source, buffer, format, (seconds * format.sampleRate).toInt(), timeShift)
+        generateFrames(source, buffer, format, (seconds * format.sampleRate).toInt(), timeShift)
     }
 
-    fun generate(
+    fun generateFrames(
         source: AudioSource,
         buffer: ByteBuffer,
         format: AudioFormat,
