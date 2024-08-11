@@ -1,10 +1,9 @@
 import lib.quint.AudioPlayer
+import lib.quint.generator.WaveformGenerator
 import lib.quint.source.StereoAudioSource
 import lib.quint.util.PitchConverter
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.AudioSystem
-import kotlin.math.PI
-import kotlin.math.sin
 
 fun main() {
     Thread.currentThread().name = "Main"
@@ -19,13 +18,11 @@ fun main() {
         }
 
         override fun sampleLeft(time: Double): Double {
-            val t = (time % (1.0 / frequencyLeft))
-            return sin(2.0 * PI * frequencyLeft * t)
+            return WaveformGenerator.Square.sample(time, frequencyLeft) * 0.3
         }
 
         override fun sampleRight(time: Double): Double {
-            val t = (time % (1.0 / frequencyRight))
-            return sin(2.0 * PI * frequencyRight * t)
+            return WaveformGenerator.Sawtooth.sample(time, frequencyRight) * 0.3
         }
     }
 
@@ -50,8 +47,8 @@ fun main() {
     line.use {
         line.open(format)
         line.start()
-        player.startAsync(source, line, timeoutSeconds = 1.0)
-        Thread.sleep(2000)
+        player.startAsync(source, line)
+        Thread.sleep(5000)
         line.close()
         player.stop()
     }
