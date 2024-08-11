@@ -39,8 +39,10 @@ class AudioPlayer {
         timeoutSeconds: Double = DEFAULT_TIMEOUT,
         framesPerBatch: Int = getDefaultFramesPerBatch(line.format),
     ) {
-        check(!isRunning) { "Player already running" }
-        startInternal()
+        synchronized(this) {
+            check(!isRunning) { "Player already running" }
+            startInternal()
+        }
         doPlayback(source, line, timeoutSeconds, framesPerBatch)
         for (l in eventListeners) l.stopped(this)
     }
@@ -65,6 +67,7 @@ class AudioPlayer {
         return thread
     }
 
+    @Synchronized
     fun stop() {
         isRunning = false
     }
