@@ -1,5 +1,6 @@
 import lib.quint.AudioPlayer
 import lib.quint.source.StereoAudioSource
+import lib.quint.util.PitchConverter
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.AudioSystem
 import kotlin.math.PI
@@ -9,14 +10,22 @@ fun main() {
     Thread.currentThread().name = "Main"
 
     val source = object : StereoAudioSource {
+        val frequencyLeft = with (PitchConverter.DEFAULT) {
+            transposeSemitones(nameToFrequency("G#3"), 1)
+        }
+
+        val frequencyRight = with (PitchConverter.DEFAULT) {
+            transposeSemitones(nameToFrequency("A#5"), -1)
+        }
+
         override fun sampleLeft(time: Double): Double {
-            val t = (time % (1.0 / 220.0))
-            return sin(2.0 * PI * 220.0 * t)
+            val t = (time % (1.0 / frequencyLeft))
+            return sin(2.0 * PI * frequencyLeft * t)
         }
 
         override fun sampleRight(time: Double): Double {
-            val t = (time % (1.0 / 880.0))
-            return sin(2.0 * PI * 880.0 * t)
+            val t = (time % (1.0 / frequencyRight))
+            return sin(2.0 * PI * frequencyRight * t)
         }
     }
 
