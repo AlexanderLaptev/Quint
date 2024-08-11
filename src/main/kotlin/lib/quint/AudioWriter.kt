@@ -51,6 +51,6 @@ object AudioWriter {
         }
     }
 
-    fun allocateBuffer(format: AudioFormat, frames: Int) =
+    fun allocateBuffer(format: AudioFormat, frames: Int): ByteBuffer =
         ByteBuffer.allocate(frames * format.frameSize)
 }
