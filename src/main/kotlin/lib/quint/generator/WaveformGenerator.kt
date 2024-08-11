@@ -14,7 +14,7 @@ enum class WaveformGenerator : Generator {
     Triangle {
         override fun sample(time: Double, frequency: Double, phase: Double): Double {
             val t = (time * frequency + phase).mod(1.0)
-            return 4.0 * abs(t- floor(0.5 + t)) - 1.0
+            return 4.0 * abs(t - floor(0.5 + t)) - 1.0
         }
     },
 
