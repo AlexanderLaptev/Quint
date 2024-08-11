@@ -75,7 +75,7 @@ class AudioPlayer {
         timeoutSeconds: Double = DEFAULT_TIMEOUT,
         framesPerBatch: Int = getDefaultFramesPerBatch(line.format),
     ) {
-        val secondsPerBatch = framesPerBatch / line.format.sampleRate
+        val secondsPerFrame = 1.0 / line.format.sampleRate
         val buffer = AudioWriter.allocateBuffer(line.format, framesPerBatch)
 
         while (isRunning && elapsedSeconds < timeoutSeconds) {
@@ -83,8 +83,8 @@ class AudioPlayer {
             AudioWriter.generate(source, buffer, line.format, framesPerBatch, elapsedSeconds)
             val bytes = buffer.array()
             line.write(bytes, 0, bytes.size)
-            elapsedSeconds += secondsPerBatch
             elapsedFrames += framesPerBatch
+            elapsedSeconds = elapsedFrames * secondsPerFrame
         }
     }
 

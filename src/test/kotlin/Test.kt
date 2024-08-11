@@ -26,6 +26,9 @@ fun main() {
         }
     }
 
+    val format = AudioFormat(44100.0f, 16, 2, true, true)
+    val line = AudioSystem.getSourceDataLine(format)
+
     // Listeners are invoked on the same thread as the player.
     val player = AudioPlayer()
     player.eventListeners += object : AudioPlayer.EventListener {
@@ -38,18 +41,17 @@ fun main() {
                 "[${Thread.currentThread().name}] stopped player " +
                         "(${player.elapsedSeconds} seconds, ${player.elapsedFrames} frames)"
             )
+            line.stop()
+            player.stop()
         }
     }
-
-    val format = AudioFormat(44100.0f, 16, 2, true, true)
-    val line = AudioSystem.getSourceDataLine(format)
 
     line.use {
         line.open(format)
         line.start()
-        player.startAsync(source, line)
-        Thread.sleep(5000)
-        line.close()
-        player.stop()
+        player.startAsync(source, line, timeoutSeconds = 5.0)
+        Thread.sleep(5100)
+//        line.close()
+//        player.stop()
     }
 }
