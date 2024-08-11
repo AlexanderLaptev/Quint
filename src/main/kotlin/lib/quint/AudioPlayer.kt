@@ -1,10 +1,6 @@
 package lib.quint
 
 import lib.quint.source.AudioSource
-import lib.quint.source.MonoAudioSource
-import lib.quint.source.StereoAudioSource
-import lib.quint.util.SampleWriter
-import java.nio.ByteBuffer
 import java.util.concurrent.ConcurrentHashMap
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.SourceDataLine
@@ -79,34 +75,16 @@ class AudioPlayer {
         timeoutSeconds: Double = DEFAULT_TIMEOUT,
         framesPerBatch: Int = getDefaultFramesPerBatch(line.format),
     ) {
-        val secondsPerFrame = 1.0 / line.format.sampleRate
-        val buffer = ByteBuffer.allocate(framesPerBatch * line.format.frameSize)
+        val secondsPerBatch = framesPerBatch / line.format.sampleRate
+        val buffer = AudioWriter.allocateBuffer(line.format, framesPerBatch)
 
-        while (isRunning) {
-            var generatedFrames = 0
+        while (isRunning && elapsedSeconds < timeoutSeconds) {
             buffer.clear()
-            repeat(framesPerBatch) {
-                elapsedSeconds = elapsedFrames.toDouble() * secondsPerFrame
-                if (!isRunning || elapsedSeconds >= timeoutSeconds) return
-                when (source) {
-                    is MonoAudioSource -> {
-                        val sample = source.sample(elapsedSeconds)
-                        SampleWriter.writeSample(buffer, line.format, sample)
-                    }
-
-                    is StereoAudioSource -> {
-                        val sampleLeft = source.sampleLeft(elapsedSeconds)
-                        val sampleRight = source.sampleRight(elapsedSeconds)
-                        SampleWriter.writeSample(buffer, line.format, sampleLeft)
-                        SampleWriter.writeSample(buffer, line.format, sampleRight)
-                    }
-                }
-                generatedFrames++
-                elapsedFrames++
-            }
-
+            AudioWriter.generate(source, buffer, line.format, framesPerBatch, elapsedSeconds)
             val bytes = buffer.array()
-            line.write(bytes, 0, generatedFrames * line.format.frameSize)
+            line.write(bytes, 0, bytes.size)
+            elapsedSeconds += secondsPerBatch
+            elapsedFrames += framesPerBatch
         }
     }
 
