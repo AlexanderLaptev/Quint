@@ -9,11 +9,11 @@ fun main() {
     Thread.currentThread().name = "Main"
 
     val source = object : StereoAudioSource {
-        val frequencyLeft = with (PitchConverter.DEFAULT) {
+        val frequencyLeft = with(PitchConverter.DEFAULT) {
             transposeSemitones(nameToFrequency("G#3"), 1)
         }
 
-        val frequencyRight = with (PitchConverter.DEFAULT) {
+        val frequencyRight = with(PitchConverter.DEFAULT) {
             transposeSemitones(nameToFrequency("A#5"), -1)
         }
 
