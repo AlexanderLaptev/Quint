@@ -25,9 +25,10 @@ fun main() {
     line.use {
         line.open(format)
         line.start()
-        player.startAsync(source, line)
-        Thread.sleep(1000)
+        player.startAsync(source, line, timeoutSeconds = 1.0)
+        Thread.sleep(2000)
         player.stop()
         line.close()
     }
+    println("${player.elapsedSeconds} s (${player.elapsedFrames} frames)")
 }
