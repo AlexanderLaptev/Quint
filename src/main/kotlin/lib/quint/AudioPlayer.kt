@@ -5,6 +5,7 @@ import lib.quint.source.MonoAudioSource
 import lib.quint.source.StereoAudioSource
 import lib.quint.util.SampleWriter
 import java.nio.ByteBuffer
+import java.util.concurrent.ConcurrentHashMap
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.SourceDataLine
 import kotlin.concurrent.thread
@@ -14,6 +15,12 @@ class AudioPlayer {
         const val DEFAULT_BATCH_DURATION = 0.1
 
         const val DEFAULT_TIMEOUT = Double.POSITIVE_INFINITY
+    }
+
+    interface EventListener {
+        fun started(player: AudioPlayer) = Unit
+
+        fun stopped(player: AudioPlayer) = Unit
     }
 
     @Volatile
@@ -28,6 +35,8 @@ class AudioPlayer {
     var elapsedSeconds: Double = 0.0
         private set
 
+    val eventListeners: MutableSet<EventListener> = ConcurrentHashMap.newKeySet()
+
     fun start(
         source: AudioSource,
         line: SourceDataLine,
@@ -35,8 +44,16 @@ class AudioPlayer {
         framesPerBatch: Int = getDefaultFramesPerBatch(line.format),
     ) {
         check(!isRunning) { "Player already running" }
+        startInternal()
         doPlayback(source, line, timeoutSeconds, framesPerBatch)
-        stop()
+        for (l in eventListeners) l.stopped(this)
+    }
+
+    private fun startInternal() {
+        isRunning = true
+        elapsedFrames = 0L
+        elapsedSeconds = 0.0
+        for (l in eventListeners) l.started(this)
     }
 
     fun startAsync(
@@ -62,10 +79,6 @@ class AudioPlayer {
         timeoutSeconds: Double = DEFAULT_TIMEOUT,
         framesPerBatch: Int = getDefaultFramesPerBatch(line.format),
     ) {
-        isRunning = true
-        elapsedFrames = 0L
-        elapsedSeconds = 0.0
-
         val secondsPerFrame = 1.0 / line.format.sampleRate
         val buffer = ByteBuffer.allocate(framesPerBatch * line.format.frameSize)
 
