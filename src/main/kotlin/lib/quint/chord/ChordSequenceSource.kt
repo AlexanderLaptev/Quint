@@ -11,7 +11,8 @@ class ChordSequenceSource(
 
     private var chordEndTime = 0.0
 
-    private var currentChord: Chord? = null
+    var currentChord: Chord? = null
+        private set
 
     var chordSequence: ChordSequence = chordSequence
         set(value) {
