@@ -2,6 +2,7 @@ import lib.quint.AudioPlayer
 import lib.quint.generator.WaveformGenerator
 import lib.quint.synthesizer.Synthesizer
 import lib.quint.synthesizer.SynthesizerSource
+import lib.quint.synthesizer.envelope.AdsrEnvelope
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.AudioSystem
 
@@ -11,7 +12,9 @@ fun main() {
 
     val leftOscillator = Synthesizer.Oscillator(WaveformGenerator.Triangle, panning = -1.0, pitch = 0.5, volume = 2.0)
     val rightOscillator = Synthesizer.Oscillator(WaveformGenerator.Triangle, panning = 1.0, pitch = 2.0)
-    val synth = Synthesizer(mutableListOf(leftOscillator, rightOscillator), volume = 0.3)
+
+    val adsr = AdsrEnvelope(0.03, 0.0, 1.0, 0.03)
+    val synth = Synthesizer(mutableListOf(leftOscillator, rightOscillator), volume = 0.3, volumeEnvelope = adsr)
     val source = SynthesizerSource(synth, doubleArrayOf(440.0))
 
     val player = AudioPlayer()

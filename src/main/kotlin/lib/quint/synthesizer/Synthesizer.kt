@@ -1,12 +1,14 @@
 package lib.quint.synthesizer
 
 import lib.quint.generator.Generator
+import lib.quint.synthesizer.envelope.Envelope
 
 class Synthesizer(
     val oscillators: MutableCollection<Oscillator> = mutableListOf(),
     var volume: Double = 1.0,
     var pitch: Double = 1.0,
     var panning: Double = 0.0,
+    var volumeEnvelope: Envelope? = null,
 ) {
     class Oscillator(
         var generator: Generator,
@@ -19,21 +21,25 @@ class Synthesizer(
     fun sampleLeft(
         time: Double,
         frequencies: DoubleArray,
-    ): Double = sample(time, frequencies, true)
+        duration: Double = Double.POSITIVE_INFINITY,
+    ): Double = sample(time, frequencies, true, duration)
 
     fun sampleRight(
         time: Double,
         frequencies: DoubleArray,
-    ): Double = sample(time, frequencies, false)
+        duration: Double = Double.POSITIVE_INFINITY,
+    ): Double = sample(time, frequencies, false, duration)
 
     private fun sample(
         time: Double,
         frequencies: DoubleArray,
         isLeft: Boolean,
+        duration: Double = Double.POSITIVE_INFINITY,
     ): Double {
         var output = 0.0
         if (oscillators.isEmpty() || frequencies.isEmpty()) return output
 
+        val actualVolume = volume * combineMultipliers(time, duration, volumeEnvelope, null)
         for (oscillator in oscillators) {
             var sample = 0.0
             for (frequency in frequencies) {
@@ -51,7 +57,19 @@ class Synthesizer(
             output += sample * oscillator.volume // Scale by the oscillator's volume
         }
 
-        return output / oscillators.size * volume // Normalize the range and scale by the global volume
+        return output / oscillators.size * actualVolume // Normalize the range and scale by the global volume
+    }
+
+    private fun combineMultipliers(
+        time: Double,
+        duration: Double,
+        envelope: Envelope?,
+        lfo: LowFrequencyOscillator?, // TODO: support LFOs
+    ): Double {
+        var result = 1.0
+        result *= envelope?.getValue(time, duration) ?: 1.0
+        result += lfo?.getValue(time) ?: 0.0
+        return result
     }
 
     private fun getChannelVolume(panning: Double, isLeft: Boolean): Double =
