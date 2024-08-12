@@ -51,7 +51,5 @@ fun main() {
         line.start()
         player.startAsync(source, line, timeoutSeconds = 5.0)
         Thread.sleep(5100)
-//        line.close()
-//        player.stop()
     }
 }
