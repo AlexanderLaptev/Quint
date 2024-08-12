@@ -9,6 +9,7 @@ class Synthesizer(
     var pitch: Double = 1.0,
     var panning: Double = 0.0,
     var volumeEnvelope: Envelope? = null,
+    var volumeLfo: LowFrequencyOscillator? = null,
 ) {
     class Oscillator(
         var generator: Generator,
@@ -39,7 +40,7 @@ class Synthesizer(
         var output = 0.0
         if (oscillators.isEmpty() || frequencies.isEmpty()) return output
 
-        val actualVolume = volume * combineMultipliers(time, duration, volumeEnvelope, null)
+        val actualVolume = volume * combineMultipliers(time, duration, volumeEnvelope, volumeLfo)
         for (oscillator in oscillators) {
             var sample = 0.0
             for (frequency in frequencies) {
@@ -64,7 +65,7 @@ class Synthesizer(
         time: Double,
         duration: Double,
         envelope: Envelope?,
-        lfo: LowFrequencyOscillator?, // TODO: support LFOs
+        lfo: LowFrequencyOscillator?,
     ): Double {
         var result = 1.0
         result *= envelope?.getValue(time, duration) ?: 1.0
