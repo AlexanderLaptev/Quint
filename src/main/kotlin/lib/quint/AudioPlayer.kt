@@ -97,6 +97,6 @@ class AudioPlayer {
         }
     }
 
-    fun getDefaultFramesPerBatch(format: AudioFormat) =
+    private fun getDefaultFramesPerBatch(format: AudioFormat) =
         (format.sampleRate * DEFAULT_BATCH_DURATION).toInt()
 }
