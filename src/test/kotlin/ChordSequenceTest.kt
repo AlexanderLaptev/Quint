@@ -14,9 +14,12 @@ fun main() {
     val oscillator3 = Synthesizer.Oscillator(WaveformGenerator.Square)
 
     val adsr = AdsrEnvelope(0.03, 0.0, 1.0, 0.03)
-    val synthesizer1 = Synthesizer(mutableListOf(oscillator1), volumeEnvelope = adsr)
-    val synthesizer2 = Synthesizer(mutableListOf(oscillator2), volumeEnvelope = adsr)
-    val synthesizer3 = Synthesizer(mutableListOf(oscillator3), volumeEnvelope = adsr)
+    val synthesizer1 = Synthesizer(mutableListOf(oscillator1))
+    val synthesizer2 = Synthesizer(mutableListOf(oscillator2))
+    val synthesizer3 = Synthesizer(mutableListOf(oscillator3))
+    synthesizer1.volumeEnvelope = adsr
+    synthesizer2.volumeEnvelope = adsr
+    synthesizer3.volumeEnvelope = adsr
 
     val cMajor = Chord.Builder(0.5, synthesizer1)
         .addNote("C4")

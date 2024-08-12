@@ -16,12 +16,10 @@ fun main() {
     val adsr = AdsrEnvelope(0.03, 0.0, 1.0, 0.03)
 
     val oscillator = Synthesizer.Oscillator(WaveformGenerator.Triangle, volume = 0.5)
-    val synth = Synthesizer(
-        mutableListOf(oscillator),
-        volumeEnvelope = adsr,
-        volumeLfo = volumeLfo,
-        panningLfo = panningLfo,
-    )
+    val synth = Synthesizer(mutableListOf(oscillator))
+    synth.volumeLfo = volumeLfo
+    synth.panningLfo = panningLfo
+    synth.volumeEnvelope = adsr
     val source = SynthesizerSource(synth, doubleArrayOf(440.0))
 
     val player = AudioPlayer()

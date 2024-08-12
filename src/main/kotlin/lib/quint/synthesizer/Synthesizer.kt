@@ -8,9 +8,6 @@ class Synthesizer(
     var volume: Double = 1.0,
     var pitch: Double = 1.0,
     var panning: Double = 0.0,
-    var volumeEnvelope: Envelope? = null,
-    var volumeLfo: LowFrequencyOscillator? = null,
-    var panningLfo: LowFrequencyOscillator? = null,
 ) {
     class Oscillator(
         var generator: Generator,
@@ -19,6 +16,12 @@ class Synthesizer(
         var panning: Double = 0.0,
         var phase: Double = 0.0,
     )
+
+    var volumeEnvelope: Envelope? = null
+
+    var volumeLfo: LowFrequencyOscillator? = null
+
+    var panningLfo: LowFrequencyOscillator? = null
 
     fun sampleLeft(
         time: Double,
