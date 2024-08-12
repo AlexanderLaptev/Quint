@@ -1,6 +1,8 @@
 package lib.quint
 
 import lib.quint.source.AudioSource
+import lib.quint.source.MonoAudioSource
+import lib.quint.source.StereoAudioSource
 import java.util.concurrent.ConcurrentHashMap
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.SourceDataLine
@@ -78,6 +80,10 @@ class AudioPlayer {
         timeoutSeconds: Double = DEFAULT_TIMEOUT,
         framesPerBatch: Int = getDefaultFramesPerBatch(line.format),
     ) {
+        check(line.format.channels == when (source) {
+            is MonoAudioSource -> 1
+            is StereoAudioSource -> 2
+        }) { "Audio source and line channel counts do not match" }
         val secondsPerFrame = 1.0 / line.format.sampleRate
         val buffer = AudioWriter.allocateBuffer(line.format, framesPerBatch)
 
