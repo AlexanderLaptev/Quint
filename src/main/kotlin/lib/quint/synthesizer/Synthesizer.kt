@@ -32,7 +32,7 @@ class Synthesizer(
         isLeft: Boolean,
     ): Double {
         var output = 0.0
-        if (oscillators.isEmpty()) return output
+        if (oscillators.isEmpty() || frequencies.isEmpty()) return output
 
         for (oscillator in oscillators) {
             var sample = 0.0
