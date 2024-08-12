@@ -1,13 +1,16 @@
 package lib.quint.chord
 
+import lib.quint.synthesizer.Synthesizer
 import lib.quint.util.PitchConverter
 
 class Chord(
     val duration: Double,
+    val synthesizer: Synthesizer,
     val frequencies: DoubleArray,
 ) {
     class Builder(
         val duration: Double,
+        val synthesizer: Synthesizer,
         val pitchConverter: PitchConverter = PitchConverter.DEFAULT,
     ) {
         private val frequencies = mutableListOf<Double>()
@@ -27,7 +30,7 @@ class Chord(
             return this
         }
 
-        fun build(): Chord = Chord(duration, frequencies.toDoubleArray())
+        fun build(): Chord = Chord(duration, synthesizer, frequencies.toDoubleArray())
     }
 
     init {
