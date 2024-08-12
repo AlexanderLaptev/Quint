@@ -7,7 +7,20 @@ import lib.quint.util.SampleWriter
 import java.nio.ByteBuffer
 import javax.sound.sampled.AudioFormat
 
+/**
+ * A utility object for writing raw audio data.
+ */
 object AudioWriter {
+    /**
+     * Generates raw audio data of the specified duration in seconds and writes
+     * it to a buffer.
+     *
+     * @param source the audio source
+     * @param buffer the buffer to write to
+     * @param format the audio format being used
+     * @param seconds the duration of the audio in seconds
+     * @param timeShift the time shift to use when sampling the source
+     */
     fun generateSeconds(
         source: AudioSource,
         buffer: ByteBuffer,
@@ -18,6 +31,16 @@ object AudioWriter {
         generateFrames(source, buffer, format, (seconds * format.sampleRate).toInt(), timeShift)
     }
 
+    /**
+     * Generates raw audio data of the specified duration in frames and writes
+     * it to a buffer.
+     *
+     * @param source the audio source
+     * @param buffer the buffer to write to
+     * @param format the audio format being used
+     * @param frames the duration of the audio in frames
+     * @param timeShift the time shift to use when sampling the source
+     */
     fun generateFrames(
         source: AudioSource,
         buffer: ByteBuffer,
@@ -51,6 +74,14 @@ object AudioWriter {
         }
     }
 
+    /**
+     * Allocates a byte buffer capable of storing the specified number of audio
+     * frames.
+     *
+     * @param format the audio format being used
+     * @param frames the requested capacity of the buffer in frames
+     * @return the newly allocated byte buffer
+     */
     fun allocateBuffer(format: AudioFormat, frames: Int): ByteBuffer =
         ByteBuffer.allocate(frames * format.frameSize)
 }

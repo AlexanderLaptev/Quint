@@ -2,8 +2,15 @@ package lib.quint.chord
 
 import lib.quint.source.StereoAudioSource
 
+/**
+ * A source for playing [ChordSequence]s.
+ *
+ * @param chordSequence the chord sequence to play
+ * @see Chord
+ * @see ChordSequence
+ */
 class ChordSequenceSource(
-    chordSequence: ChordSequence
+    chordSequence: ChordSequence,
 ) : StereoAudioSource {
     private var chordIndex = 0
 
@@ -14,6 +21,9 @@ class ChordSequenceSource(
     var currentChord: Chord? = null
         private set
 
+    /**
+     * The current chord sequence being played.
+     */
     var chordSequence: ChordSequence = chordSequence
         set(value) {
             field = value
@@ -24,6 +34,10 @@ class ChordSequenceSource(
         this.chordSequence = chordSequence
     }
 
+    /**
+     * Resets the current position in the sequence, causing the playback to
+     * reset from the beginning.
+     */
     fun reset() {
         currentChord = chordSequence.chords.firstOrNull()
         chordIndex = 0

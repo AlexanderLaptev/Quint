@@ -1,5 +1,14 @@
 package lib.quint.synthesizer.envelope
 
+/**
+ * An ADSR (attack-decay-sustain-release) envelope commonly used to control
+ * volume.
+ *
+ * @param attack the attack time
+ * @param decay the decay time
+ * @param sustain the sustain value
+ * @param release the release time
+ */
 class AdsrEnvelope(
     var attack: Double,
     var decay: Double,

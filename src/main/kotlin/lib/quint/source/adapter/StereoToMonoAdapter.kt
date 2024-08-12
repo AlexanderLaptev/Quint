@@ -3,6 +3,13 @@ package lib.quint.source.adapter
 import lib.quint.source.MonoAudioSource
 import lib.quint.source.StereoAudioSource
 
+/**
+ * An adapter from a [StereoAudioSource] to a [MonoAudioSource].
+ *
+ * @param stereoSource the stereo source to adapt
+ * @param balance the balance applied to the original source before mixing
+ *   it down to mono
+ */
 class StereoToMonoAdapter(
     var stereoSource: StereoAudioSource,
     var balance: Double = 0.0,

@@ -1,5 +1,8 @@
 package lib.quint.source
 
+/**
+ * A stereo audio source
+ */
 class Mixer(
     val slots: MutableList<Slot> = mutableListOf(),
     val masterParams: Params = Params(),

@@ -1,14 +1,36 @@
 package lib.quint.synthesizer
 
 import lib.quint.generator.Generator
+import lib.quint.synthesizer.Synthesizer.Oscillator
 import lib.quint.synthesizer.envelope.Envelope
 
+/**
+ * A [Synthesizer] consists of several [Oscillator]s playing one or more
+ * frequencies together.
+ *
+ * @param oscillators a mutable collection of oscillators used in this
+ *   synthesizer
+ * @param volume the volume of this synthesizer
+ * @param pitch the pitch of this synthesizer
+ * @param panning the panning of this synthesizer
+ * @see Oscillator
+ * @see SynthesizerSource
+ */
 class Synthesizer(
     val oscillators: MutableCollection<Oscillator> = mutableListOf(),
     var volume: Double = 1.0,
     var pitch: Double = 1.0,
     var panning: Double = 0.0,
 ) {
+    /**
+     * An oscillator used in a [Synthesizer].
+     *
+     * @param generator the generator used in this oscillator
+     * @param volume the volume of this individual oscillator
+     * @param pitch the pitch of this individual oscillator
+     * @param panning the panning of this individual oscillator
+     * @param phase the phase of this oscillator
+     */
     class Oscillator(
         var generator: Generator,
         var volume: Double = 1.0,
@@ -17,10 +39,31 @@ class Synthesizer(
         var phase: Double = 0.0,
     )
 
+    /**
+     * The envelope used for modifying the resulting volume of this
+     * synthesizer. If no envelope should be used, this should be set to
+     * `null`.
+     *
+     * @see Envelope
+     */
     var volumeEnvelope: Envelope? = null
 
+    /**
+     * The LFO used for modifying the resulting volume of this
+     * synthesizer. If no LFO should be used, this should be set to
+     * `null`.
+     *
+     * @see LowFrequencyOscillator
+     */
     var volumeLfo: LowFrequencyOscillator? = null
 
+    /**
+     * The LFO used for modifying the resulting panning of this
+     * synthesizer. If no LFO should be used, this should be set to
+     * `null`.
+     *
+     * @see LowFrequencyOscillator
+     */
     var panningLfo: LowFrequencyOscillator? = null
 
     fun sampleLeft(

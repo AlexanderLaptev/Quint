@@ -3,6 +3,12 @@ package lib.quint.source.adapter
 import lib.quint.source.MonoAudioSource
 import lib.quint.source.StereoAudioSource
 
+/**
+ * An adapter from a [MonoAudioSource] to a [StereoAudioSource].
+ *
+ * @param monoSource the mono source to adapt
+ * @param panning the panning of the adapted mono source
+ */
 class MonoToStereoAdapter(
     var monoSource: MonoAudioSource,
     var panning: Double = 0.0,

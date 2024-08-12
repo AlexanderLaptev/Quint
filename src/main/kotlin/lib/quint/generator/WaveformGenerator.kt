@@ -5,12 +5,21 @@ import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.sin
 
+/**
+ * A generator for pure waveforms.
+ */
 enum class WaveformGenerator : Generator {
+    /**
+     * A generator of sine waves.
+     */
     Sine {
         override fun sample(time: Double, frequency: Double, phase: Double): Double =
             sin((PI2 * frequency * time + phase * PI2).mod(PI2))
     },
 
+    /**
+     * A generator of triangle waves.
+     */
     Triangle {
         override fun sample(time: Double, frequency: Double, phase: Double): Double {
             val t = (time * frequency + phase).mod(1.0)
@@ -18,6 +27,9 @@ enum class WaveformGenerator : Generator {
         }
     },
 
+    /**
+     * A generator of square waves.
+     */
     Square {
         override fun sample(time: Double, frequency: Double, phase: Double): Double {
             val t = (time * frequency + phase).mod(1.0)
@@ -25,6 +37,9 @@ enum class WaveformGenerator : Generator {
         }
     },
 
+    /**
+     * A generator of sawtooth waves.
+     */
     Sawtooth {
         override fun sample(time: Double, frequency: Double, phase: Double): Double {
             val t = (time * frequency + phase).mod(1.0)
@@ -33,6 +48,9 @@ enum class WaveformGenerator : Generator {
     };
 
     companion object {
+        /**
+         * The constant equal to 2*pi.
+         */
         const val PI2 = 2.0 * PI
     }
 }
