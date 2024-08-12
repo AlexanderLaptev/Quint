@@ -4,6 +4,7 @@ import lib.quint.chord.ChordSequence
 import lib.quint.chord.ChordSequenceSource
 import lib.quint.generator.WaveformGenerator
 import lib.quint.synthesizer.Synthesizer
+import lib.quint.synthesizer.envelope.AdsrEnvelope
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.AudioSystem
 
@@ -12,9 +13,10 @@ fun main() {
     val oscillator2 = Synthesizer.Oscillator(WaveformGenerator.Sine)
     val oscillator3 = Synthesizer.Oscillator(WaveformGenerator.Square)
 
-    val synthesizer1 = Synthesizer(mutableListOf(oscillator1))
-    val synthesizer2 = Synthesizer(mutableListOf(oscillator2))
-    val synthesizer3 = Synthesizer(mutableListOf(oscillator3))
+    val adsr = AdsrEnvelope(0.03, 0.0, 1.0, 0.03)
+    val synthesizer1 = Synthesizer(mutableListOf(oscillator1), volumeEnvelope = adsr)
+    val synthesizer2 = Synthesizer(mutableListOf(oscillator2), volumeEnvelope = adsr)
+    val synthesizer3 = Synthesizer(mutableListOf(oscillator3), volumeEnvelope = adsr)
 
     val cMajor = Chord.Builder(0.5, synthesizer1)
         .addNote("C4")

@@ -7,6 +7,8 @@ class ChordSequenceSource(
 ) : StereoAudioSource {
     private var chordIndex = 0
 
+    private var chordStartTime = 0.0
+
     private var chordEndTime = 0.0
 
     private var currentChord: Chord? = null
@@ -24,19 +26,20 @@ class ChordSequenceSource(
     fun reset() {
         currentChord = chordSequence.chords.firstOrNull()
         chordIndex = 0
+        chordStartTime = 0.0
         chordEndTime = currentChord?.duration ?: 0.0
     }
 
     override fun sampleLeft(time: Double): Double {
         updateCurrentChord(time)
         val chord = currentChord ?: return 0.0
-        return chord.synthesizer.sampleLeft(time, chord.frequencies)
+        return chord.synthesizer.sampleLeft(time - chordStartTime, chord.frequencies, chord.duration)
     }
 
     override fun sampleRight(time: Double): Double {
         updateCurrentChord(time)
         val chord = currentChord ?: return 0.0
-        return chord.synthesizer.sampleRight(time, chord.frequencies)
+        return chord.synthesizer.sampleRight(time - chordStartTime, chord.frequencies, chord.duration)
     }
 
     private fun updateCurrentChord(time: Double) {
@@ -44,6 +47,7 @@ class ChordSequenceSource(
         while (time > chordEndTime) {
             chordIndex++
             currentChord = chordSequence.chords.getOrNull(chordIndex)
+            chordStartTime = chordEndTime
             chordEndTime += currentChord?.duration ?: Double.POSITIVE_INFINITY
         }
     }
