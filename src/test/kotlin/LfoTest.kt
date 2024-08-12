@@ -12,10 +12,16 @@ fun main() {
     val line = AudioSystem.getSourceDataLine(format)
 
     val volumeLfo = LowFrequencyOscillator(WaveformGenerator.Sine, 5.0, 0.4, delay = 1.0, attack = 2.0)
+    val panningLfo = LowFrequencyOscillator(WaveformGenerator.Sine, 1.0, 1.0, delay = 1.0, phase = 0.5)
     val adsr = AdsrEnvelope(0.03, 0.0, 1.0, 0.03)
 
     val oscillator = Synthesizer.Oscillator(WaveformGenerator.Triangle, volume = 0.5)
-    val synth = Synthesizer(mutableListOf(oscillator), volumeEnvelope = adsr, volumeLfo = volumeLfo)
+    val synth = Synthesizer(
+        mutableListOf(oscillator),
+        volumeEnvelope = adsr,
+        volumeLfo = volumeLfo,
+        panningLfo = panningLfo,
+    )
     val source = SynthesizerSource(synth, doubleArrayOf(440.0))
 
     val player = AudioPlayer()

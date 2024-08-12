@@ -10,6 +10,7 @@ class Synthesizer(
     var panning: Double = 0.0,
     var volumeEnvelope: Envelope? = null,
     var volumeLfo: LowFrequencyOscillator? = null,
+    var panningLfo: LowFrequencyOscillator? = null,
 ) {
     class Oscillator(
         var generator: Generator,
@@ -40,7 +41,9 @@ class Synthesizer(
         var output = 0.0
         if (oscillators.isEmpty() || frequencies.isEmpty()) return output
 
-        val actualVolume = volume * combineMultipliers(time, duration, volumeEnvelope, volumeLfo)
+        val actualVolume = combineMultipliers(volume, time, duration, volumeEnvelope, volumeLfo)
+        val actualPanning = combineMultipliers(panning, time, duration, null, panningLfo)
+
         for (oscillator in oscillators) {
             var sample = 0.0
             for (frequency in frequencies) {
@@ -52,7 +55,7 @@ class Synthesizer(
             }
 
             sample *= getChannelVolume(oscillator.panning, isLeft) // Apply panning from the oscillator
-            sample *= getChannelVolume(panning, isLeft) // Apply global panning of the synthesizer
+            sample *= getChannelVolume(actualPanning, isLeft) // Apply global panning of the synthesizer
             sample /= frequencies.size // Normalize the output range
 
             output += sample * oscillator.volume // Scale by the oscillator's volume
@@ -62,12 +65,13 @@ class Synthesizer(
     }
 
     private fun combineMultipliers(
+        value: Double,
         time: Double,
         duration: Double,
         envelope: Envelope?,
         lfo: LowFrequencyOscillator?,
     ): Double {
-        var result = 1.0
+        var result = value
         result *= envelope?.getValue(time, duration) ?: 1.0
         result += lfo?.getValue(time) ?: 0.0
         return result
